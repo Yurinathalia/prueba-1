@@ -78,7 +78,7 @@ if (searchForm && searchInput && searchStatus && resultsContainer) {
     } catch (error) {
       if (requestId !== activeRequest) return;
       console.error("Error al buscar usuarios:", error);
-      searchStatus.textContent = error.message || "No fue posible consultar los usuarios.";
+      showApiError(searchStatus, error);
       searchStatus.classList.add("error");
     }
   }

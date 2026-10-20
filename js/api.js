@@ -10,12 +10,32 @@ function getApiBaseUrl() {
   }
 
   if (window.location.hostname.endsWith(".github.io")) {
-    throw new Error(
-      "Esto no depende de que uses PC o teléfono: el enlace de GitHub Pages solo contiene la página. Para abrir el directorio en este PC con su base de datos local, ejecuta «node backend/server.js» desde la carpeta del proyecto y entra a http://localhost:3000. El enlace de GitHub funcionará cuando se configure una API alojada en internet."
-    );
+    throw new Error("La página publicada no está conectada a la base de datos.");
   }
 
   return `http://${window.location.hostname}:3000`;
+}
+
+function showApiError(container, error) {
+  if (window.location.hostname.endsWith(".github.io") && !configuredApiBaseUrl) {
+    container.replaceChildren(
+      document.createTextNode(
+        "Para ver los datos ahora, conecta el teléfono a la misma Wi-Fi del PC y abre "
+      )
+    );
+    const localAppLink = document.createElement("a");
+    localAppLink.href = "http://10.250.108.80:3000/";
+    localAppLink.textContent = "el directorio en la red local";
+    container.append(
+      localAppLink,
+      document.createTextNode(
+        ". El PC debe permanecer encendido con el servidor activo."
+      )
+    );
+    return;
+  }
+
+  container.textContent = error.message || "No fue posible consultar los datos.";
 }
 
 async function fetchApiJson(url) {

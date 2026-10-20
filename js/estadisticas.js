@@ -41,7 +41,7 @@ if (chartContainer && chartStatus) {
         : "No hay usuarios registrados para mostrar.";
     } catch (error) {
       console.error("Error al cargar las estadísticas:", error);
-      chartStatus.textContent = error.message || "No fue posible cargar las estadísticas.";
+      showApiError(chartStatus, error);
       chartStatus.classList.add("error");
     }
   }
