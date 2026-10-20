@@ -1,19 +1,23 @@
-const CACHE_NAME = "epq-directorio-v4";
+const CACHE_NAME = "epq-directorio-v7";
+const APP_ROOT = new URL("./", self.registration.scope);
 const APP_SHELL = [
-  "/",
-  "/index.html",
-  "/pages/empleados.html",
-  "/pages/estadisticas.html",
-  "/styles/styles.css",
-  "/js/api.js",
-  "/js/buscar.js",
-  "/js/estadisticas.js",
-  "/js/pwa.js",
-  "/manifest.webmanifest",
-  "/assets/epq%20logo.png",
-  "/assets/pwa-icon-192.png",
-  "/assets/pwa-icon-512.png"
-];
+  "",
+  "index.html",
+  "pages/empleados.html",
+  "pages/estadisticas.html",
+  "pages/cumpleanos.html",
+  "pages/dependencias.html",
+  "styles/styles.css",
+  "js/config.js",
+  "js/api.js",
+  "js/buscar.js",
+  "js/estadisticas.js",
+  "js/pwa.js",
+  "manifest.webmanifest",
+  "assets/epq%20logo.png",
+  "assets/pwa-icon-192.png",
+  "assets/pwa-icon-512.png"
+].map((path) => new URL(path, APP_ROOT).href);
 
 self.addEventListener("install", (event) => {
   event.waitUntil(
@@ -61,7 +65,7 @@ self.addEventListener("fetch", (event) => {
         })
         .catch(async () => {
           const cachedPage = await caches.match(request);
-          return cachedPage || caches.match("/");
+          return cachedPage || caches.match(APP_ROOT.href);
         })
     );
     return;

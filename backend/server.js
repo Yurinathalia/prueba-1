@@ -1,5 +1,6 @@
 const path = require("node:path");
 const net = require("node:net");
+const os = require("node:os");
 const express = require("express");
 const mysql = require("mysql2/promise");
 require("dotenv").config({ path: path.join(__dirname, ".env") });
@@ -7,6 +8,12 @@ require("dotenv").config({ path: path.join(__dirname, ".env") });
 const app = express();
 const projectRoot = path.resolve(__dirname, "..");
 const tableName = process.env.USERS_TABLE || "Users";
+const allowedOrigins = new Set(
+  (process.env.ALLOWED_ORIGINS || "")
+    .split(",")
+    .map((origin) => origin.trim())
+    .filter(Boolean)
+);
 const pool = mysql.createPool({
   host: process.env.DB_HOST || "localhost",
   port: Number(process.env.DB_PORT || 3306),
@@ -111,6 +118,10 @@ function isLocalDevelopmentOrigin(origin) {
     octets[0] === 127;
 }
 
+function isAllowedOrigin(origin) {
+  return isLocalDevelopmentOrigin(origin) || allowedOrigins.has(origin);
+}
+
 app.use("/styles", express.static(path.join(projectRoot, "styles")));
 app.use("/js", express.static(path.join(projectRoot, "js")));
 app.use("/assets", express.static(path.join(projectRoot, "assets")));
@@ -128,15 +139,15 @@ app.get("/sw.js", (req, res) => {
 
 app.use("/api", (req, res, next) => {
   const origin = req.get("Origin");
-  const isLocalOrigin = isLocalDevelopmentOrigin(origin);
+  const isAllowed = isAllowedOrigin(origin);
 
-  if (isLocalOrigin) {
+  if (isAllowed) {
     res.set("Access-Control-Allow-Origin", origin);
     res.vary("Origin");
   }
 
   if (req.method === "OPTIONS") {
-    if (!isLocalOrigin) {
+    if (!isAllowed) {
       return res.sendStatus(403);
     }
     res.set("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -145,6 +156,10 @@ app.use("/api", (req, res, next) => {
   }
 
   next();
+});
+
+app.get("/health", (req, res) => {
+  res.json({ status: "ok" });
 });
 
 app.get("/", (req, res) => {
@@ -201,6 +216,18 @@ app.use((req, res) => {
 });
 
 const port = Number(process.env.PORT || 3000);
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
   console.log(`Directorio disponible en http://localhost:${port}`);
+  const interfaces = Object.values(os.networkInterfaces()).flat();
+  const lanAddress = interfaces.find((address) =>
+    address &&
+    address.family === "IPv4" &&
+    !address.internal &&
+    isLocalDevelopmentOrigin(`http://${address.address}`)
+  );
+  if (lanAddress) {
+    console.log(`Acceso desde la red Wi-Fi: http://${lanAddress.address}:${port}`);
+  } else {
+    console.warn("No se encontró una dirección IPv4 privada para acceso desde el teléfono.");
+  }
 });
