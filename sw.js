@@ -1,4 +1,4 @@
-const CACHE_NAME = "epq-directorio-v11";
+const CACHE_NAME = "epq-directorio-v12";
 const APP_ROOT = new URL("./", self.registration.scope);
 const APP_SHELL = [
   "",

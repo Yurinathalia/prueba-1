@@ -60,21 +60,22 @@ if (searchForm && searchInput && searchStatus && resultsContainer) {
     resultsContainer.replaceChildren();
     searchStatus.classList.remove("error");
 
-    searchStatus.textContent = name
-      ? "Buscando usuarios…"
-      : "Cargando todos los usuarios…";
+    if (!name) {
+      searchStatus.textContent = "Ingresa un nombre para comenzar la búsqueda.";
+      return;
+    }
+
+    searchStatus.textContent = "Buscando usuarios…";
 
     try {
-      const query = name ? `?q=${encodeURIComponent(name)}` : "";
+      const query = `?q=${encodeURIComponent(name)}`;
       const result = await fetchApiJson(`/api/users${query}`);
       if (requestId !== activeRequest) return;
 
       showResults(result.users, result.columns, result.nameColumn);
-      searchStatus.textContent = name
-        ? result.users.length
-          ? `${result.users.length} usuario(s) encontrado(s).`
-          : "No se encontraron usuarios con ese nombre."
-        : `${result.users.length} usuario(s) en el directorio.`;
+      searchStatus.textContent = result.users.length
+        ? `${result.users.length} usuario(s) encontrado(s).`
+        : "No se encontraron usuarios con ese nombre.";
     } catch (error) {
       if (requestId !== activeRequest) return;
       console.error("Error al buscar usuarios:", error);
@@ -85,6 +86,10 @@ if (searchForm && searchInput && searchStatus && resultsContainer) {
 
   searchInput.addEventListener("input", () => {
     window.clearTimeout(debounceTimer);
+    if (!searchInput.value.trim()) {
+      searchUsers();
+      return;
+    }
     debounceTimer = window.setTimeout(searchUsers, 250);
   });
 
@@ -93,6 +98,4 @@ if (searchForm && searchInput && searchStatus && resultsContainer) {
     window.clearTimeout(debounceTimer);
     searchUsers();
   });
-
-  searchUsers();
 }
