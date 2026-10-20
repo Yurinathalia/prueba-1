@@ -1,0 +1,26 @@
+{
+  "id": "/",
+  "name": "Directorio de empleados EPQ",
+  "short_name": "Directorio EPQ",
+  "description": "Directorio de empleados y estadísticas de Empresas Públicas del Quindío.",
+  "lang": "es",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#00234d",
+  "icons": [
+    {
+      "src": "/assets/pwa-icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/pwa-icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

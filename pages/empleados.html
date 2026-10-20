@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#00234d" />
+    <title>Buscar empleados | Directorio EPQ</title>
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="stylesheet" href="../styles/styles.css" />
+    <script src="../js/api.js" defer></script>
+    <script src="../js/buscar.js" defer></script>
+    <script src="../js/pwa.js" defer></script>
+  </head>
+  <body>
+    <header class="encabezado">
+      <a class="marca" href="../">
+        <img src="../assets/epq logo.png" alt="Logo de Empresas Públicas del Quindío" />
+        <span>Directorio de empleados</span>
+      </a>
+      <p>Empresas Públicas del Quindío</p>
+    </header>
+
+    <div class="app-layout">
+      <input type="checkbox" id="menu-toggle" aria-label="Contraer menú" />
+      <aside class="sidebar">
+        <label for="menu-toggle" class="flecha" aria-hidden="true"><span class="flecha-abierta">◀</span><span class="flecha-cerrada">▶</span></label>
+        <a href="../" class="opcion activo"><span aria-hidden="true">E</span><span class="texto">Empleados</span></a>
+        <a href="estadisticas.html" class="opcion"><span aria-hidden="true">▥</span><span class="texto">Estadísticas</span></a>
+        <a href="cumpleanos.html" class="opcion"><span aria-hidden="true">C</span><span class="texto">Cumpleaños</span></a>
+        <a href="dependencias.html" class="opcion"><span aria-hidden="true">D</span><span class="texto">Dependencias</span></a>
+      </aside>
+
+      <main class="contenido">
+        <section class="panel">
+          <h1>Buscar empleados</h1>
+          <p class="descripcion">Escribe el nombre de una persona para consultar el directorio.</p>
+          <form id="form-busqueda" role="search">
+            <label for="busqueda-nombre">Nombre del empleado</label>
+            <div class="buscador">
+              <input id="busqueda-nombre" name="nombre" type="search" placeholder="Ej. María Gómez" autocomplete="off" />
+              <button type="submit">Buscar</button>
+            </div>
+          </form>
+          <p id="estado-busqueda" class="estado" aria-live="polite">Ingresa un nombre para comenzar la búsqueda.</p>
+          <div id="resultados-usuarios" class="resultados" aria-live="polite"></div>
+        </section>
+      </main>
+    </div>
+  </body>
+</html>
